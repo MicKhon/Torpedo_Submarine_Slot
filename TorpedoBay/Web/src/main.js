@@ -824,7 +824,7 @@ function buildLogo() {
   ui.logoGroup = new Container()
   ui.barkGroup = new Container()
   world.addChild(ui.logoGroup, ui.barkGroup)
-  const logo = new Sprite(art.titleTexture("U-BOOT", 64, { spacing: 10 }))
+  const logo = new Sprite(art.titleTexture("TORPEDO X STRIKE", 42, { spacing: 4 }))
   logo.anchor.set(0.5)
   logo.scale.set(0.5)
   logo.x = W / 2
@@ -832,7 +832,7 @@ function buildLogo() {
   ui.logoGroup.addChild(logo)
   ui.logo = logo
   gsap.to(logo, { y: 54, duration: 2.6, yoyo: true, repeat: -1, ease: "sine.inOut" })
-  const sub = txt("T I E F S E E   ·   T O R P E D O A L A R M", 16, 0x9fb7c4, { stroke: false })
+  const sub = txt("TIEFSEE  ·  NUR SPIELGELD", 16, 0x9fb7c4, { stroke: false })
   sub.x = W / 2
   sub.y = 94
   ui.logoGroup.addChild(sub)
@@ -999,7 +999,7 @@ function buildTubes() {
   const names = ["HECK", "MOTOR", "LADUNG", "BUG"]
   ui.tubes = []
   ui.bayMask = new Graphics()
-  ui.bayMask.rect(BAY_X - 8, BAY_LIP - 2, BAY_W + 16, 420).fill(0xffffff)
+  ui.bayMask.rect(BAY_X - 80, BAY_LIP - 2, BAY_W + 160, 480).fill(0xffffff)
   ui.bayMask.visible = false
   ui.board.addChild(ui.bayMask)
   ui.hatches = new Container()
@@ -1030,6 +1030,22 @@ function buildTubes() {
   ui.cradle = new Graphics()
   ui.launcher.addChild(ui.cradle)
   drawCradle()
+  ui.bayLamps = []
+  const lampYs = [BAY_TOP + 7, BAY_TOP + BAY_H - 7]
+  lampYs.forEach((y) => {
+    for (let i = 0; i < 5; i++) {
+      const lamp = new Sprite(textures.redGlow)
+      lamp.anchor.set(0.5)
+      lamp.x = BAY_X + 70 + i * ((BAY_W - 140) / 4)
+      lamp.y = y
+      lamp.scale.set(0.22)
+      lamp.blendMode = "add"
+      lamp.alpha = 0
+      lamp.tint = 0xff2418
+      ui.launcher.addChild(lamp)
+      ui.bayLamps.push(lamp)
+    }
+  })
   ui.tubeRoot = new Container()
   ui.launcher.addChild(ui.tubeRoot)
   ui.torpedo = new Container()
@@ -1098,6 +1114,27 @@ function buildTubes() {
   ui.tubeCaption.x = W / 2
   ui.tubeCaption.y = BAY_TOP + BAY_H - 8
   ui.launcher.addChild(ui.tubeCaption)
+  const cap = (outward) => {
+    const door = new Graphics()
+    const mouth = BAY_H
+    const reach = outward * (mouth / 2)
+    door.moveTo(0, 0)
+    door.bezierCurveTo(reach, 0, reach, mouth, 0, mouth)
+    door.closePath()
+    door.fill({ color: 0x10161b, alpha: 0.98 })
+    door.moveTo(0, 0)
+    door.bezierCurveTo(reach, 0, reach, mouth, 0, mouth)
+    door.stroke({ width: 4, color: 0xb08a48, cap: "round", join: "round" })
+    return door
+  }
+  ui.capRear = cap(-1)
+  ui.capRear.x = BAY_X
+  ui.capRear.y = BAY_TOP
+  ui.capBow = cap(1)
+  ui.capBow.x = BAY_X + BAY_W
+  ui.capBow.y = BAY_TOP
+  ui.launcher.addChild(ui.capRear, ui.capBow)
+  ui.bayArmed = false
   drawTubes(freshTubes())
 }
 
@@ -1108,13 +1145,30 @@ function drawCradle() {
   const w = BAY_W
   const h = BAY_H
   g.clear()
-  g.roundRect(x, y, w, h, 18).fill({ color: 0x10161b, alpha: 0.98 }).stroke({ width: 4, color: 0xb08a48 })
-  g.roundRect(x + 8, y + 7, w - 16, h - 14, 14).stroke({ width: 1, color: 0xffffff, alpha: 0.1 })
+  g.roundRect(x + 2, y + 2, w - 4, h - 4, 8).fill({ color: 0x10161b, alpha: 0.98 })
   g.roundRect(x + 22, y + 16, w - 44, h - 40, 20).fill({ color: 0x06090c }).stroke({ width: 2, color: 0x31404a })
-  g.roundRect(x + 10, y + 14, 16, h - 30, 4).fill({ color: 0x243038 })
-  g.roundRect(x + w - 26, y + 14, 16, h - 30, 4).fill({ color: 0x243038 })
-  g.circle(x + 34, y + h - 13, 4).fill({ color: 0x1c3a28 }).stroke({ width: 1.5, color: 0x5dff9a })
-  g.circle(x + w - 34, y + h - 13, 4).fill({ color: 0x3a2a12 }).stroke({ width: 1.5, color: 0xe2b04a })
+  g.moveTo(x, y).lineTo(x + w, y).stroke({ width: 4, color: 0xb08a48, cap: "round" })
+  g.moveTo(x, y + h).lineTo(x + w, y + h).stroke({ width: 4, color: 0xb08a48, cap: "round" })
+  g.moveTo(x + 20, y + 7).lineTo(x + w - 20, y + 7).stroke({ width: 1, color: 0xffffff, alpha: 0.1 })
+}
+
+function setBayArmed(on) {
+  if (!ui.capRear || ui.bayArmed === on) return
+  ui.bayArmed = on
+  const openAngle = 135 * Math.PI / 180
+  gsap.to(ui.capRear, { rotation: on ? openAngle : 0, duration: 1.45, ease: on ? "power1.inOut" : "power2.in" })
+  gsap.to(ui.capBow, { rotation: on ? -openAngle : 0, duration: 1.45, ease: on ? "power1.inOut" : "power2.in" })
+  ui.bayLamps.forEach((lamp, index) => {
+    gsap.killTweensOf(lamp)
+    if (on) {
+      lamp.alpha = 0.2
+      gsap.to(lamp, { alpha: 0.9, duration: 0.28 + (index % 5) * 0.04, yoyo: true, repeat: -1, ease: "sine.inOut" })
+    } else gsap.to(lamp, { alpha: 0, duration: 0.25 })
+  })
+  if (on) {
+    audio.sfx.hydraulic(0.45)
+    audio.sfx.clank()
+  }
 }
 
 function drawTubes(values) {
@@ -1122,6 +1176,7 @@ function drawTubes(values) {
   if (!ui.launching) ui.tubeRoot.alpha = 1
   const ready = values.filter((v) => v > 0).length
   ui.tubeCaption.text = ready === 4 ? "TORPEDO KOMPLETT — FEUER!" : `TORPEDO BAUEN  ·  ${ready} / 4 TEILE  ·  KOMPLETT = ABSCHUSS`
+  if (!ui.launching) setBayArmed(ready >= 2)
   if (ui.launching) return
   ui.tubes.forEach((seg, index) => {
     const v = values[index]
@@ -1140,10 +1195,11 @@ function drawTubes(values) {
 async function deployLauncher() {
   if (ui.launcherOpen) return
   ui.launcherOpen = true
-  ui.launcher.visible = true
-  ui.hatches.visible = true
   ui.bayMask.visible = true
   ui.launcher.mask = ui.bayMask
+  ui.launcher.y = -BAY_TRAVEL
+  ui.launcher.visible = true
+  ui.hatches.visible = true
   gsap.killTweensOf([ui.launcher, ui.hatchL.scale, ui.hatchR.scale, ui.seam, ui.board, ui.board.scale])
   ui.launcher.y = -BAY_TRAVEL
   ui.hatchL.scale.x = 1
@@ -1159,6 +1215,7 @@ async function deployLauncher() {
     tween(ui.hatchL.scale, { x: 0.02, duration: 0.42, ease: "power3.in" }),
     tween(ui.hatchR.scale, { x: 0.02, duration: 0.42, ease: "power3.in" }),
   ])
+  ui.hatches.visible = false
   audio.sfx.clank()
   await tween(ui.launcher, {
     y: 0,
@@ -1195,6 +1252,7 @@ async function stowLauncher() {
   ui.seam.alpha = 0
   ui.launcherOpen = false
   ui.tubeCaption.text = ""
+  setBayArmed(false)
   applyBoardFrame(false)
   await wait(0.7)
 }
@@ -1709,9 +1767,9 @@ async function presentLaunch(event) {
   audio.sfx.clank()
   shake(8, 0.3)
   await wait(0.5)
-  ui.tubes.forEach((seg, index) => {
-    gsap.fromTo(seg.shine, { x: -30, alpha: 0.9 }, { x: SEG_W + 30, alpha: 0, duration: 0.35, delay: index * 0.12 })
-    gsap.to(seg.glow, { alpha: 1, duration: 0.3 })
+  ui.tubes.forEach((seg) => {
+    gsap.killTweensOf(seg.glow)
+    gsap.to(seg.glow, { alpha: 0, duration: 0.15 })
   })
   const total = txt(`×${event.charges.join(" · ×")}`, 30, 0xffe08a, { strokeWidth: 4 })
   const totalAt = toWorld(cx, cy - 48)
@@ -1724,36 +1782,30 @@ async function presentLaunch(event) {
 
   ui.torpedo.pivot.set(cx, cy)
   ui.torpedo.position.set(cx, cy)
+  if (!ui.bayArmed) {
+    setBayArmed(true)
+    await wait(1.2)
+  }
   const prop = ui.tubes[0].prop
-  if (prop) gsap.to(prop.scale, { y: -1, duration: 0.05, yoyo: true, repeat: 40, ease: "none" })
-  audio.sfx.ignite(1.5)
-  audio.sfx.riser(1.5)
-  const rumble = gsap.to(ui.torpedo, { x: cx + 3, duration: 0.04, yoyo: true, repeat: 30, ease: "none" })
-  const stream = setInterval(() => {
-    const tail = torpedoTail(ui.torpedo.scale.x)
-    particles.emit(textures.bubble, tail.x, tail.y, { count: 3, speed: 120, angle: Math.PI + ui.torpedo.rotation, cone: 0.7, scale: 0.35, life: 0.9, gravity: -90, wobble: 40 })
-  }, 40)
-  await wait(1.25)
+  if (prop) gsap.to(prop.scale, { y: -1, duration: 0.05, yoyo: true, repeat: 28, ease: "none" })
+  audio.sfx.ignite(0.7)
+  audio.sfx.riser(0.55)
+  const rumble = gsap.to(ui.torpedo, { y: cy + 2, duration: 0.04, yoyo: true, repeat: 12, ease: "none" })
+  await wait(0.45)
   rumble.kill()
-  ui.torpedo.x = cx
-
+  ui.torpedo.y = cy
   audio.sfx.launch()
   audio.sfx.whoosh()
   bark("Torpedo läuft!")
-  clearInterval(stream)
   const trail = setInterval(() => {
     const tail = torpedoTail(ui.torpedo.scale.x)
-    particles.emit(textures.fire, tail.x, tail.y, { count: 2, speed: 80, angle: Math.PI + ui.torpedo.rotation, cone: 0.5, scale: 0.55, life: 0.45, gravity: 0, blend: "add", grow: 0.6, tint: [0xffb347, 0xffe08a] })
-    particles.emit(textures.smoke, tail.x, tail.y, { count: 1, speed: 40, scale: 0.6, life: 1.4, gravity: -30, grow: 0.8, alpha: 0.45 })
-    particles.emit(textures.bubble, tail.x, tail.y, { count: 2, speed: 90, scale: 0.3, life: 1, gravity: -120, spreadX: 20, wobble: 30 })
-  }, 30)
-  gsap.to(ui.torpedo, { rotation: -Math.PI / 2, duration: 0.55, ease: "power2.inOut" })
-  gsap.to(ui.torpedo.scale, { x: 1.25, y: 1.25, duration: 0.9 })
-  await tween(ui.torpedo, { y: cy - 140, duration: 0.55, ease: "power2.out" })
-  shake(10, 0.4)
-  await tween(ui.torpedo, { y: -500, duration: 0.6, ease: "power3.in" })
+    particles.emit(textures.bubble, tail.x, tail.y, { count: 10, speed: 460, angle: Math.PI, cone: 0.16, scale: 0.42, life: 1.8, gravity: 30, drag: 0.992, alpha: 0.9 })
+    particles.emit(textures.dot, tail.x, tail.y, { count: 6, speed: 620, angle: Math.PI, cone: 0.08, scale: 0.14, life: 1.4, gravity: 8, drag: 0.994, blend: "add", tint: 0xd5f3ff, alpha: 0.5 })
+  }, 24)
+  await tween(ui.torpedo, { x: W + 560, duration: 0.62, ease: "power2.in" })
+  await wait(0.7)
   clearInterval(trail)
-  await wait(0.3)
+  await wait(0.15)
 
   ui.torpedo.rotation = Math.PI / 2
   ui.torpedo.scale.set(0.9)
@@ -1761,7 +1813,7 @@ async function presentLaunch(event) {
   audio.sfx.whoosh()
   const dive = setInterval(() => {
     const tail = torpedoTail(ui.torpedo.scale.x)
-    particles.emit(textures.fire, tail.x, tail.y, { count: 2, speed: 60, angle: -Math.PI / 2, cone: 0.5, scale: 0.5, life: 0.35, gravity: 0, blend: "add", grow: 0.5 })
+    particles.emit(textures.bubble, tail.x, tail.y, { count: 4, speed: 80, angle: -Math.PI / 2, cone: 0.5, scale: 0.4, life: 0.8, gravity: 40 })
   }, 30)
   const impactY = area.top + area.height / 2
   await tween(ui.torpedo, { y: impactY - 120, duration: 0.42, ease: "power2.in" })

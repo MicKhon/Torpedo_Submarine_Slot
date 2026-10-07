@@ -64,7 +64,7 @@ final class StageBox: NSView {
             webView.topAnchor.constraint(equalTo: topAnchor),
             webView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
-        let title = NSTextField(labelWithString: "U-BOOT")
+        let title = NSTextField(labelWithString: "TORPEDO X STRIKE")
         title.font = NSFont(name: "Copperplate", size: 42) ?? .boldSystemFont(ofSize: 42)
         title.textColor = NSColor(red: 0.78, green: 0.63, blue: 0.35, alpha: 1)
         title.translatesAutoresizingMaskIntoConstraints = false
