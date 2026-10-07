@@ -1,8 +1,6 @@
 import AppKit
 import SpriteKit
 
-/// SpriteKit layer for the torpedo run, mine blast, and win burst.
-/// SpriteKit is the Mac-native 2D engine: actions, emitters, and screen shake without a third-party runtime.
 final class SeaFXScene: SKScene {
     private let world = SKNode()
     private var torpedo: SKNode?

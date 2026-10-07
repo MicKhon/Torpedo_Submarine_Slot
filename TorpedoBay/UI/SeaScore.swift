@@ -2,7 +2,6 @@ import AVFoundation
 import Foundation
 import os
 
-/// Original underwater score. A minor ostinato, sonar, and sea noise — written for this game, not taken from any slot soundtrack.
 final class SeaScore {
     static let shared = SeaScore()
 
@@ -127,7 +126,6 @@ private final class ScoreState {
         let bpm = currentMode == 2 ? 108.0 : (currentMode == 1 ? 94.0 : 78.0)
         let beat = 60.0 / bpm
         let dt = 1.0 / sampleRate
-        // A minor palette, original voicing.
         let melody: [Double] = [220, 329.63, 261.63, 196, 220, 246.94, 329.63, 293.66]
         let padFreqs: [Double] = [110, 164.81, 220]
 

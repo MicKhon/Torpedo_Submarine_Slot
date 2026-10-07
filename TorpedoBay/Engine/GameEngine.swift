@@ -165,8 +165,6 @@ final class GameEngine {
         )
     }
 
-    // MARK: - Building the grid
-
     private struct DepthPlan {
         var reel: Int
         var steps: Int
@@ -339,8 +337,6 @@ final class GameEngine {
         }
     }
 
-    /// Cascades refill with ordinary symbols. Specials are dealt on the opening drop,
-    /// otherwise sonar and periscopes chain until the round hits the ceiling.
     private func refillCell(reel _: Int, mode _: GameMode) -> Cell {
         Cell(symbol: pick(Self.reelWeights))
     }

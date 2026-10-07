@@ -6,7 +6,17 @@
 
 Это самостоятельная программа. Она не связана с казино, операторами азартных игр и коммерческими слотами.
 
-Скачать игру одним файлом: [Torpedo x Strike 2.2](https://github.com/MicKhon/Torpedo_Submarine_Slot/releases/tag/v2.2). Это архив. После распаковки откройте `Torpedo x Strike.app`. Если macOS пишет, что разработчик не опознан, нажмите по приложению правой кнопкой и выберите «Открыть».
+Скачать можно только само приложение. Эта версия работает только на Mac.
+
+Файл в репозитории: [Torpedo x Strike.app](https://github.com/MicKhon/Torpedo_Submarine_Slot/tree/main/Torpedo%20x%20Strike.app).
+
+Как запустить:
+
+1. Скачайте `Torpedo x Strike.app`.
+2. Откройте его двойным щелчком.
+3. Если macOS пишет, что разработчик не опознан, нажмите по файлу правой кнопкой и выберите «Открыть».
+
+Windows и телефон эту сборку не запускают.
 
 ## Скриншоты
 
@@ -133,7 +143,7 @@ esbuild src/main.js --bundle --outfile=game.js --format=iife --platform=browser 
 xcodebuild -project TorpedoBay.xcodeproj -scheme TorpedoBay -configuration Debug -destination "platform=macOS" build
 ```
 
-Готовая игра версии 2.2 лежит в релизе: [Torpedo x Strike 2.2](https://github.com/MicKhon/Torpedo_Submarine_Slot/releases/tag/v2.2). Внутри архива одно приложение, `Torpedo x Strike.app`.
+Готовое приложение версии 2.2 лежит в репозитории: [Torpedo x Strike.app](https://github.com/MicKhon/Torpedo_Submarine_Slot/tree/main/Torpedo%20x%20Strike.app). Скачивать можно только его. Сборка только для Mac.
 
 ## Версия
 

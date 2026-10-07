@@ -1,8 +1,5 @@
 import Foundation
 
-/// Ways evaluator. A win is the same paying symbol on 3 or more adjacent reels
-/// starting from the left. Wilds substitute. Each cell contributes its `ways`
-/// weight, so a current or a launched torpedo can count as several symbols.
 enum Paymaster {
     static func wins(on grid: [[Cell]], bet: Int, multiplier: Int) -> [WayWin] {
         let mult = max(1, multiplier)

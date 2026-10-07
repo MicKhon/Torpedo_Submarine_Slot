@@ -1,7 +1,5 @@
 import Foundation
 
-/// Original submarine slot. Mechanics are inspired by the underwater
-/// "collect a torpedo" genre, with original names, art, and math.
 enum GameMode: Equatable {
     case base
     case hunter
@@ -15,7 +13,6 @@ enum GameMode: Equatable {
         }
     }
 
-    /// Visible rows per reel. The middle pair is taller, like a hull viewport.
     var reelHeights: [Int] {
         switch self {
         case .base, .pack: [2, 3, 4, 4, 3, 2]
@@ -42,8 +39,6 @@ enum Symbol: String, Equatable, Hashable, CaseIterable {
         .cook, .radio, .engineer, .officer, .captain
     ]
 
-    /// Payout in hundredths of the bet, for 3, 4, 5 and 6 connected reels, per way.
-    /// Scaled from the classic submarine-slot table so a full reel strip still lands near a 96% demo return.
     static let pays: [Symbol: [Int]] = [
         .ten: [9, 11, 23, 63],
         .jack: [9, 13, 27, 90],
@@ -94,9 +89,7 @@ struct Cell: Identifiable, Equatable {
     var id: UUID = UUID()
     var symbol: Symbol
     var ways: Int = 1
-    /// Shared by every wild of a depth-shift reel. The board reads the max, so it is not summed per cell.
     var depthMultiplier: Int = 0
-    /// Tails of a launched stack. They display the symbol but do not add extra ways.
     var reelStack: Bool = false
 }
 
