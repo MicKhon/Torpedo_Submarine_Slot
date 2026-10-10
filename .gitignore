@@ -1,3 +1,7 @@
 .DS_Store
 xcuserdata/
 DerivedData/
+Windows/node_modules/
+Windows/dist/
+Windows/game/
+Windows/package-lock.json

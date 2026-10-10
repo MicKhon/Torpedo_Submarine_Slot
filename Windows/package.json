@@ -1,0 +1,52 @@
+{
+  "name": "torpedo-x-strike",
+  "version": "2.2.0",
+  "private": true,
+  "productName": "Torpedo x Strike",
+  "description": "Torpedo x Strike. Демонстрационные кредиты, без реальных денег и без выплат.",
+  "author": "Михаил Хонинев <mkhoninev@mail.ru>",
+  "main": "main.js",
+  "devDependencies": {
+    "electron": "33.4.11",
+    "electron-builder": "25.1.8",
+    "png-to-ico": "2.1.8",
+    "resedit": "^1.7.1"
+  },
+  "scripts": {
+    "stage": "node stage.js",
+    "start": "node stage.js && electron .",
+    "dist": "node stage.js && electron-builder --win dir --x64 && node stamp.js && electron-builder --prepackaged dist/win-unpacked --win portable --x64"
+  },
+  "build": {
+    "appId": "com.local.torpedobay",
+    "productName": "Torpedo x Strike",
+    "copyright": "Демо на виртуальные кредиты",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "server.js",
+      "icon.png",
+      "game/**"
+    ],
+    "asar": true,
+    "compression": "maximum",
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "icon.ico",
+      "signAndEditExecutable": false,
+      "artifactName": "Torpedo x Strike.exe"
+    },
+    "portable": {
+      "artifactName": "Torpedo x Strike.exe"
+    }
+  }
+}
